@@ -1,2 +1,3 @@
-# photon
+# Photon Framework
+
 Lightweight PHP Framework 💡
