@@ -39,6 +39,7 @@ class Photon
             }
         }
 
+        $has_output = false;
         foreach(array_keys($routes) as $route)
         {
             if($route == $_SERVER["REQUEST_URI"])
@@ -49,7 +50,14 @@ class Photon
                 // Execute action from the controller
                 $tmp_class = new $controller_class();
                 $tmp_class->$action_name();
+
+                $has_output = true;
             }
+        }
+
+        if(!$has_output)
+        {
+            header('HTTP/1.1 404 Not Found');
         }
     }
 
