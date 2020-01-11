@@ -13,4 +13,4 @@ $photon->ignite();
 Credits
 ---
 
-Photon is powered by Clint.Network
+Photon is powered by [Clint.Network](https://twitter.com/clint_network).
