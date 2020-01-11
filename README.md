@@ -1,3 +1,3 @@
 # Photon PHP Framework
 
-Lightweight PHP Framework 💡
+Photon is a Lightweight PHP Framework 💡
