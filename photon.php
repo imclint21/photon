@@ -10,11 +10,11 @@
 class Photon
 {
     private $routes = [];
-    private $development = false;
+    private $development_mode = false;
 
-    public function __construct($development = false)
+    public function __construct($development_mode = false)
     {
-        $this->$development = $development;
+        $this->development_mode = $development_mode;
     }
 
     /**
@@ -33,19 +33,34 @@ class Photon
                 $controller_class = pathinfo(ucfirst($controller), PATHINFO_FILENAME);
                 foreach(get_class_methods($controller_class) as $action_name)
                 {
+                    $rc = new ReflectionMethod($controller_class, $action_name);
+                    if (preg_match_all('/@(\w+)\s+(.*)\r?\n/m', $rc->getDocComment(), $matches))
+                    {
+                        $result = array_combine($matches[1], $matches[2]);
+                        if(isset($result["route"]))
+                        {
+                            $this->routes[trim($result["route"])] = array("Controller" => $controller_class, "Action" => $action_name);
+                        }
+                    }
+
                     // TODO: fix problem with project subfolder
-                    $routes["/$controller_name/$action_name"] = array("Controller" => $controller_class, "Action" => $action_name);
+                    $this->routes["/$controller_name/$action_name"] = array("Controller" => $controller_class, "Action" => $action_name);
                 }
             }
         }
 
+        if($this->development_mode)
+        {
+            Photon::inject_debug();
+        }
+
         $has_output = false;
-        foreach(array_keys($routes) as $route)
+        foreach(array_keys($this->routes) as $route)
         {
             if($route == $_SERVER["REQUEST_URI"])
             {
-                $controller_class = $routes[$route]["Controller"];
-                $action_name = $routes[$route]["Action"];
+                $controller_class = $this->routes[$route]["Controller"];
+                $action_name = $this->routes[$route]["Action"];
 
                 // Execute action from the controller
                 $tmp_class = new $controller_class();
@@ -55,7 +70,7 @@ class Photon
             }
         }
 
-        if(!$has_output)
+        if(!$has_output && !$this->development_mode)
         {
             header('HTTP/1.1 404 Not Found');
         }
@@ -63,6 +78,15 @@ class Photon
 
     public static function path_builder()
     {
+    }
+
+    public static function inject_debug()
+    {
+        echo <<<HTML
+<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', Helvetica, Arial, sans-serif; position: fixed; bottom: 0; right: 0; padding: 10px; color: #333333;">
+    Photon Framework | <span style="color: #0e5a90;">Development Mode</span>
+</div>
+HTML;
     }
 
     public static function debug($what)
