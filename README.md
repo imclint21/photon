@@ -13,9 +13,10 @@ $photon->ignite();
 ToDo
 ---
 
-- [ ] Basic MVC
+- [x] Basic MVC
 - [ ] Layout file
 - [ ] Complex routing with parameters
+- [ ] Error Management
 
 Credits
 ---
