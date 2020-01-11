@@ -33,6 +33,9 @@ class Photon
                 $controller_class = pathinfo(ucfirst($controller), PATHINFO_FILENAME);
                 foreach(get_class_methods($controller_class) as $action_name)
                 {
+                    // TODO: fix problem with project subfolder
+                    $this->routes["/$controller_name/$action_name"] = array("Controller" => $controller_class, "Action" => $action_name);
+
                     $rc = new ReflectionMethod($controller_class, $action_name);
                     if (preg_match_all('/@(\w+)\s+(.*)\r?\n/m', $rc->getDocComment(), $matches))
                     {
@@ -40,11 +43,9 @@ class Photon
                         if(isset($result["route"]))
                         {
                             $this->routes[trim($result["route"])] = array("Controller" => $controller_class, "Action" => $action_name);
+                            unset($this->routes["/$controller_name/$action_name"]);
                         }
                     }
-
-                    // TODO: fix problem with project subfolder
-                    $this->routes["/$controller_name/$action_name"] = array("Controller" => $controller_class, "Action" => $action_name);
                 }
             }
         }
