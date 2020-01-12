@@ -4,10 +4,15 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="icon" href="/example/favicon.ico" />
     <title>Photon PHP Framework</title>
+    <style>
+        .bg-dark {
+            background-color: #292c35 !important;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
+        <div class="container py-1">
             <a class="navbar-brand" href="/example">💡 Photon PHP Framework</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
                 aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
