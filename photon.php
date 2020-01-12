@@ -253,4 +253,9 @@ function view()
     $get_caller = Photon::get_caller(2);
     include dirname($_SERVER["SCRIPT_FILENAME"]) . "/views/" . strtolower($get_caller["class"]) . "/" . $get_caller["function"] . ".php";
 }
+
+function content($what)
+{
+    echo $what;
+}
 ?>
