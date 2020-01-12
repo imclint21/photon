@@ -8,7 +8,7 @@ class Home
 
     public function about()
     {
-        $viewbag = "haha trop insane";
+        Photon::$viewbag = "This is the about page.";
         return view();
     }
 
