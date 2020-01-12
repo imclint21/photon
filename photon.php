@@ -24,7 +24,7 @@ class Photon
     /**
      * Initialize the framework
      */
-    public function illuminate()
+    public function ignite()
     {
         $controller_files = scandir($this->application_root . "/controllers");
 
