@@ -21,6 +21,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/example/home/about">About</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/example/privacy-policy">Privacy Policy</a>
+                    </li>
                 </ul>
             </div>
         </div>
