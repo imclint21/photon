@@ -33,6 +33,11 @@ class Photon
      */
     public static $viewbag;
 
+    /**
+     * To store view data
+     */
+    public static $model;
+
     public function __construct()
     {
         $this->base_route = dirname($_SERVER["SCRIPT_NAME"]);
@@ -45,6 +50,7 @@ class Photon
     public function ignite()
     {
         $controller_files = $this->load_folder($this->application_root . "/controllers");
+        $model_files = $this->load_folder($this->application_root . "/models");
 
         foreach($controller_files as $controller)
         {
@@ -76,6 +82,11 @@ class Photon
                     }
                 }
             }
+        }
+
+        foreach($model_files as $model)
+        {
+            $this->inject_file($this->application_root . "/models/$model");
         }
 
         if($this->development_mode)
@@ -267,9 +278,10 @@ class StringManipulation
     }
 }
 
-function view()
+function view($view_parameters = null)
 {
     $get_caller = Photon::get_caller(2);
+    Photon::$model = $view_parameters;
     Photon::inject_file(dirname($_SERVER["SCRIPT_FILENAME"]) . "/views/" . strtolower($get_caller["class"]) . "/" . $get_caller["function"] . ".php");
 }
 
