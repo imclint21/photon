@@ -4,6 +4,9 @@ Photon is a Lightweight PHP MVC Framework 💡
 
 How to Ignite?
 ---
+
+To use `Photon` you only need to add theses lines into your index.php folder and create some folders.
+
 ```php
 require_once(__DIR__ . "/photon.php");
 $photon = new Photon(true);
@@ -12,7 +15,6 @@ $photon->ignite();
 
 Really Simple to Use
 ---
-To use `Photon` you only need to add theses lines into your index.php folder and create some folders.
 
 ```php
 class Home 
