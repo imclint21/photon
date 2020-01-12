@@ -52,7 +52,8 @@ class Photon
 
         if($this->development_mode)
         {
-            Photon::inject_debug();
+            PhotonInject::css();
+            PhotonInject::debug();
         }
 
         $has_output = false;
@@ -71,23 +72,21 @@ class Photon
             }
         }
 
-        if(!$has_output && !$this->development_mode)
+        if(!$has_output)
         {
-            header('HTTP/1.1 404 Not Found');
+            if($this->development_mode)
+            {
+                PhotonInject::error(404);
+            }
+            else
+            {
+                header('HTTP/1.1 404 Not Found');
+            }
         }
     }
 
     public static function path_builder()
     {
-    }
-
-    public static function inject_debug()
-    {
-        echo <<<HTML
-<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', Helvetica, Arial, sans-serif; position: fixed; bottom: 0; right: 0; padding: 10px; color: #333333;">
-    Photon Framework | <span style="color: #0e5a90;">Development Mode</span>
-</div>
-HTML;
     }
 
     public static function debug($what)
@@ -100,6 +99,84 @@ HTML;
     public static function get_caller($index = 1)
     {
         return debug_backtrace()[$index];
+    }
+}
+
+class PhotonInject
+{
+    public static function css()
+    {
+        echo <<<HTML
+<style type="text/css">
+.photon
+{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', Helvetica, Arial, sans-serif; position: fixed; bottom: 0; right: 0; padding: 10px; color: #333333;
+    color: #333333;
+}
+
+.photon.error
+{
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 85%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.photon.error .code
+{
+    font-size: 20rem;
+}
+
+.photon.error .message
+{
+    font-size: 23pt;
+    color: #555555;
+    margin: 0;
+}
+
+.photon.powered
+{
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    padding: 10px;
+}
+
+.photon.powered .accent
+{
+    color: #0e5a90;
+}
+</style>
+HTML;
+    }
+
+    public static function debug()
+    {
+        echo <<<HTML
+<div class="photon powered">
+    Photon Framework | <span class="accent">Development Mode</span>
+</div>
+HTML;
+    }
+
+    public static function error($code = 500)
+    {
+        $message = "Internal Server Error";
+        if($code == 404)
+        {
+            $message = "This page or request does not exists.";
+        }
+        
+        echo <<<HTML
+<div class="photon error">
+    <span class="code">$code</span>
+    <p class="message">$message</p>
+</div>
+HTML;
     }
 }
 
