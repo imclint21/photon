@@ -1,6 +1,9 @@
 <?php
 class Home 
 {
+    /**
+     * @route /
+     */
     public function index()
     {
         return view();
