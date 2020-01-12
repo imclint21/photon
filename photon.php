@@ -136,7 +136,7 @@ class Photon
 
     public static function render_body()
     {
-        $baggy = Photon::get_caller(3)["object"]->baggy;
+        $baggy = Photon::get_caller(4)["object"]->baggy;
 
         $controller_class = $baggy["Controller"];
         $action_name = $baggy["Action"];
