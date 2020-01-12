@@ -38,14 +38,6 @@ class Home
 }
 ```
 
-ToDo
----
-
-- [x] Basic MVC
-- [ ] Layout file
-- [ ] Complex routing with parameters
-- [ ] Error Management
-
 Credits
 ---
 
