@@ -48,7 +48,7 @@ class Photon
 
         foreach($controller_files as $controller)
         {
-            include $this->application_root . "/controllers/$controller";
+            Photon::inject_file($this->application_root . "/controllers/$controller");
             $controller_name = pathinfo(strtolower($controller), PATHINFO_FILENAME);
             $controller_class = pathinfo(ucfirst($controller), PATHINFO_FILENAME);
             foreach(get_class_methods($controller_class) as $action_name)
@@ -97,7 +97,7 @@ class Photon
                 {
                     // Inject the layout view
                     $this->baggy = array("Controller" => $controller_class, "Action" => $action_name);
-                    include $this->application_root . "/views/$layout_view.php";
+                    Photon::inject_file($this->application_root . "/views/$layout_view.php");
                 }
                 else
                 {
@@ -133,6 +133,11 @@ class Photon
         // Execute actions from the controller
         $tmp_class = new $controller_class();
         $tmp_class->$action_name();
+    }
+
+    public static function inject_file($file_location)
+    {
+        include $file_location;
     }
 
     public static function debug($what)
@@ -265,7 +270,7 @@ class StringManipulation
 function view()
 {
     $get_caller = Photon::get_caller(2);
-    include dirname($_SERVER["SCRIPT_FILENAME"]) . "/views/" . strtolower($get_caller["class"]) . "/" . $get_caller["function"] . ".php";
+    Photon::inject_file(dirname($_SERVER["SCRIPT_FILENAME"]) . "/views/" . strtolower($get_caller["class"]) . "/" . $get_caller["function"] . ".php");
 }
 
 function content($what)
