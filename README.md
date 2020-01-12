@@ -10,10 +10,10 @@ $photon = new Photon(true);
 $photon->ignite();
 ```
 
-To use `Photon` you only need to add theses lines into your index.php folder and create some folders.
-
 Really Simple to Use
 ---
+To use `Photon` you only need to add theses lines into your index.php folder and create some folders.
+
 ```php
 class Home 
 {
