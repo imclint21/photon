@@ -6,12 +6,17 @@ class Home
         return view();
     }
 
-    /**
-     * @route /home/mdr/wtf
-     */
     public function about()
     {
         $viewbag = "haha trop insane";
+        return view();
+    }
+
+    /**
+     * @route /privacy-policy
+     */
+    public function privacy()
+    {
         return view();
     }
 }
