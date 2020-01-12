@@ -54,6 +54,11 @@ class Photon
                 {
                     $this->routes[$this->base_route . "/$controller_name/$action_name"] = array("Controller" => $controller_class, "Action" => $action_name);
 
+                    if($action_name == "index")
+                    {
+                        $this->routes[$this->base_route . "/$controller_name"] = array("Controller" => $controller_class, "Action" => $action_name);
+                    }
+
                     $rc = new ReflectionMethod($controller_class, $action_name);
                     if (preg_match_all('/@(\w+)\s+(.*)\r?\n/m', $rc->getDocComment(), $matches))
                     {
