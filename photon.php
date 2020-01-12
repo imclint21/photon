@@ -10,7 +10,6 @@
 class Photon
 {
     private $routes = [];
-    private $development_mode = false;
     private $application_root;
     private $base_route;
 
@@ -18,6 +17,11 @@ class Photon
      * You need to have a '_layout.php' in the views folder when $use_layout_view is enabled
      */
     public $use_layout_view = false;
+    
+    /**
+     * If the development mode is enabled, you will visual helps
+     */
+    public $development_mode = false;
 
     /**
      * To store anything
