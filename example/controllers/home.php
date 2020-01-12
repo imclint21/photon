@@ -11,6 +11,7 @@ class Home
      */
     public function about()
     {
+        $viewbag = "haha trop insane";
         return view();
     }
 }
