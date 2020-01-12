@@ -1,6 +1,6 @@
 <?php
 /**
- * Photo PHP Framework 1.0
+ * Photon PHP MVC Framework 1.0
  * Photon is a Lightweight PHP Framework 💡
  * 
  * @author Clint.Network
