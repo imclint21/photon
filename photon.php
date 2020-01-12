@@ -24,6 +24,11 @@ class Photon
      */
     public $baggy;
 
+    /**
+     * To store view data
+     */
+    public static $viewbag;
+
     public function __construct($development_mode = false)
     {
         $this->base_route = dirname($_SERVER["SCRIPT_NAME"]);
