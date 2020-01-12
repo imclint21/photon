@@ -11,9 +11,13 @@ class Photon
 {
     private $routes = [];
     private $development_mode = false;
+    private $application_root;
+    private $base_route;
 
     public function __construct($development_mode = false)
     {
+        $this->base_route = dirname($_SERVER["SCRIPT_NAME"]);
+        $this->application_root = dirname($_SERVER["SCRIPT_FILENAME"]);
         $this->development_mode = $development_mode;
     }
 
@@ -22,19 +26,18 @@ class Photon
      */
     public function illuminate()
     {
-        $controller_files = scandir(__DIR__ . "/controllers");
+        $controller_files = scandir($this->application_root . "/controllers");
 
         foreach($controller_files as $controller)
         {
             if(StringManipulation::endsWith($controller, ".php"))
             {
-                include __DIR__ . "/controllers/$controller";
+                include $this->application_root . "/controllers/$controller";
                 $controller_name = pathinfo(strtolower($controller), PATHINFO_FILENAME);
                 $controller_class = pathinfo(ucfirst($controller), PATHINFO_FILENAME);
                 foreach(get_class_methods($controller_class) as $action_name)
                 {
-                    // TODO: fix problem with project subfolder
-                    $this->routes["/$controller_name/$action_name"] = array("Controller" => $controller_class, "Action" => $action_name);
+                    $this->routes[$this->base_route . "/$controller_name/$action_name"] = array("Controller" => $controller_class, "Action" => $action_name);
 
                     $rc = new ReflectionMethod($controller_class, $action_name);
                     if (preg_match_all('/@(\w+)\s+(.*)\r?\n/m', $rc->getDocComment(), $matches))
@@ -42,8 +45,8 @@ class Photon
                         $result = array_combine($matches[1], $matches[2]);
                         if(isset($result["route"]))
                         {
-                            $this->routes[trim($result["route"])] = array("Controller" => $controller_class, "Action" => $action_name);
-                            unset($this->routes["/$controller_name/$action_name"]);
+                            $this->routes[$this->base_route . trim($result["route"])] = array("Controller" => $controller_class, "Action" => $action_name);
+                            unset($this->routes[$this->base_route . "/$controller_name/$action_name"]);
                         }
                     }
                 }
@@ -104,6 +107,9 @@ class Photon
 
 class PhotonInject
 {
+    /**
+     * Inject the CSS
+     */
     public static function css()
     {
         echo <<<HTML
@@ -154,6 +160,9 @@ class PhotonInject
 HTML;
     }
 
+    /**
+     * Add a powered message
+     */
     public static function debug()
     {
         echo <<<HTML
@@ -163,6 +172,9 @@ HTML;
 HTML;
     }
 
+    /**
+     * Create an error message
+     */
     public static function error($code = 500)
     {
         $message = "Internal Server Error";
@@ -170,7 +182,7 @@ HTML;
         {
             $message = "This page or request does not exists.";
         }
-        
+
         echo <<<HTML
 <div class="photon error">
     <span class="code">$code</span>
@@ -202,6 +214,6 @@ class StringManipulation
 function view()
 {
     $get_caller = Photon::get_caller(2);
-    include __DIR__ . "/views/" . strtolower($get_caller["class"]) . "/" . $get_caller["function"] . ".php";
+    include dirname($_SERVER["SCRIPT_FILENAME"]) . "/views/" . strtolower($get_caller["class"]) . "/" . $get_caller["function"] . ".php";
 }
 ?>
