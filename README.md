@@ -1,6 +1,6 @@
 # Photon PHP Framework
 
-Photon is a Lightweight PHP Framework 💡
+Photon is a Lightweight PHP MVC Framework 💡
 
 How to Ignite?
 ---
