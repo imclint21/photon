@@ -44,38 +44,35 @@ class Photon
      */
     public function ignite()
     {
-        $controller_files = scandir($this->application_root . "/controllers");
+        $controller_files = $this->load_folder($this->application_root . "/controllers");
 
         foreach($controller_files as $controller)
         {
-            if(StringManipulation::endsWith($controller, ".php"))
+            include $this->application_root . "/controllers/$controller";
+            $controller_name = pathinfo(strtolower($controller), PATHINFO_FILENAME);
+            $controller_class = pathinfo(ucfirst($controller), PATHINFO_FILENAME);
+            foreach(get_class_methods($controller_class) as $action_name)
             {
-                include $this->application_root . "/controllers/$controller";
-                $controller_name = pathinfo(strtolower($controller), PATHINFO_FILENAME);
-                $controller_class = pathinfo(ucfirst($controller), PATHINFO_FILENAME);
-                foreach(get_class_methods($controller_class) as $action_name)
-                {
-                    $this->routes[$this->base_route . "/$controller_name/$action_name"] = array("Controller" => $controller_class, "Action" => $action_name);
+                $this->routes[$this->base_route . "/$controller_name/$action_name"] = array("Controller" => $controller_class, "Action" => $action_name);
 
-                    if($action_name == "index")
+                if($action_name == "index")
+                {
+                    $this->routes[$this->base_route . "/$controller_name"] = array("Controller" => $controller_class, "Action" => $action_name);
+                }
+
+                $rc = new ReflectionMethod($controller_class, $action_name);
+                if (preg_match_all('/@(\w+)\s+(.*)\r?\n/m', $rc->getDocComment(), $matches))
+                {
+                    $result = array_combine($matches[1], $matches[2]);
+                    if(isset($result["route"]))
                     {
-                        $this->routes[$this->base_route . "/$controller_name"] = array("Controller" => $controller_class, "Action" => $action_name);
+                        $this->routes[$this->base_route . trim($result["route"])] = array("Controller" => $controller_class, "Action" => $action_name);
+                        unset($this->routes[$this->base_route . "/$controller_name/$action_name"]);
                     }
 
-                    $rc = new ReflectionMethod($controller_class, $action_name);
-                    if (preg_match_all('/@(\w+)\s+(.*)\r?\n/m', $rc->getDocComment(), $matches))
+                    if(isset($result["layout"]))
                     {
-                        $result = array_combine($matches[1], $matches[2]);
-                        if(isset($result["route"]))
-                        {
-                            $this->routes[$this->base_route . trim($result["route"])] = array("Controller" => $controller_class, "Action" => $action_name);
-                            unset($this->routes[$this->base_route . "/$controller_name/$action_name"]);
-                        }
-
-                        if(isset($result["layout"]))
-                        {
-                            $this->routes[$this->base_route . trim($result["route"])]["Layout"] = trim($result["layout"]);
-                        }
+                        $this->routes[$this->base_route . trim($result["route"])]["Layout"] = trim($result["layout"]);
                     }
                 }
             }
@@ -86,7 +83,7 @@ class Photon
             PhotonInject::css();
             PhotonInject::debug();
         }
-
+        
         $has_output = false;
         foreach(array_keys($this->routes) as $route)
         {
@@ -143,6 +140,14 @@ class Photon
         echo "<pre>";
         print_r($what);
         echo "</pre>";
+    }
+
+    public static function load_folder($folder)
+    {
+        return array_filter(scandir($folder), function($v, $k)
+        {
+            return StringManipulation::endsWith($v, ".php");
+        }, ARRAY_FILTER_USE_BOTH);
     }
 
     public static function get_caller($index = 1)
