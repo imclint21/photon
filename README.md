@@ -16,6 +16,8 @@ $photon->ignite();
 Really Simple to Use
 ---
 
+If you want to try `Photon` you can easily download this [example](https://github.com/clintnetwork/photon/tree/master/example).
+
 ```php
 class Home 
 {
