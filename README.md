@@ -9,7 +9,7 @@ To use `Photon` you only need to add theses lines into your index.php folder and
 
 ```php
 require_once(__DIR__ . "/photon.php");
-$photon = new Photon(true);
+$photon = new Photon();
 $photon->ignite();
 ```
 
