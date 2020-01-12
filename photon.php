@@ -33,11 +33,10 @@ class Photon
      */
     public static $viewbag;
 
-    public function __construct($development_mode = false)
+    public function __construct()
     {
         $this->base_route = dirname($_SERVER["SCRIPT_NAME"]);
         $this->application_root = dirname($_SERVER["SCRIPT_FILENAME"]);
-        $this->development_mode = $development_mode;
     }
 
     /**
