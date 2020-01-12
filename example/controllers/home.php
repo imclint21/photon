@@ -19,5 +19,14 @@ class Home
     {
         return view();
     }
+
+    /**
+     * @layout null
+     * @route /robots.txt
+     */
+    public function robot()
+    {
+        return content("User-agent: *\nAllow: /");
+    }
 }
 ?>

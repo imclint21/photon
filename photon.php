@@ -68,6 +68,11 @@ class Photon
                             $this->routes[$this->base_route . trim($result["route"])] = array("Controller" => $controller_class, "Action" => $action_name);
                             unset($this->routes[$this->base_route . "/$controller_name/$action_name"]);
                         }
+
+                        if(isset($result["layout"]))
+                        {
+                            $this->routes[$this->base_route . trim($result["route"])]["Layout"] = trim($result["layout"]);
+                        }
                     }
                 }
             }
@@ -86,12 +91,13 @@ class Photon
             {
                 $controller_class = $this->routes[$route]["Controller"];
                 $action_name = $this->routes[$route]["Action"];
+                $layout_view = isset($this->routes[$route]["Layout"]) ? $this->routes[$route]["Layout"] : "_layout";
 
-                if($this->use_layout_view)
+                if($this->use_layout_view && $layout_view != "null")
                 {
                     // Inject the layout view
                     $this->baggy = array("Controller" => $controller_class, "Action" => $action_name);
-                    include $this->application_root . "/views/_layout.php";
+                    include $this->application_root . "/views/$layout_view.php";
                 }
                 else
                 {
