@@ -14,6 +14,16 @@ class Photon
     private $application_root;
     private $base_route;
 
+    /**
+     * You need to have a '_layout.php' in the views folder when $use_layout_view is enabled
+     */
+    public $use_layout_view = false;
+
+    /**
+     * To store anything
+     */
+    public $baggy;
+
     public function __construct($development_mode = false)
     {
         $this->base_route = dirname($_SERVER["SCRIPT_NAME"]);
@@ -67,9 +77,18 @@ class Photon
                 $controller_class = $this->routes[$route]["Controller"];
                 $action_name = $this->routes[$route]["Action"];
 
-                // Execute action from the controller
-                $tmp_class = new $controller_class();
-                $tmp_class->$action_name();
+                if($this->use_layout_view)
+                {
+                    // Inject the layout view
+                    $this->baggy = array("Controller" => $controller_class, "Action" => $action_name);
+                    include $this->application_root . "/views/_layout.php";
+                }
+                else
+                {
+                    // Execute actions from the controller
+                    $tmp_class = new $controller_class();
+                    $tmp_class->$action_name();
+                }
 
                 $has_output = true;
             }
@@ -88,8 +107,16 @@ class Photon
         }
     }
 
-    public static function path_builder()
+    public static function render_body()
     {
+        $baggy = Photon::get_caller(3)["object"]->baggy;
+
+        $controller_class = $baggy["Controller"];
+        $action_name = $baggy["Action"];
+
+        // Execute actions from the controller
+        $tmp_class = new $controller_class();
+        $tmp_class->$action_name();
     }
 
     public static function debug($what)
